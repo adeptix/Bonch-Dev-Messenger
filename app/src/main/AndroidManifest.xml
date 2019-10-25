@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="bonch.dev.school">
 
     <application
@@ -8,16 +9,25 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ui.activities.SignUpActivity"></activity>
-        <activity android:name=".ui.activities.SignInActivity" />
-        <activity android:name=".ui.activities.MainAppActivity">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <activity
+            android:name=".ui.activities.SignInActivity"
+            android:theme="@style/NoToolbarTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.activities.SignUpActivity"
+            android:theme="@style/NoToolbarTheme" />
+
+        <activity android:name=".ui.activities.MainAppActivity" />
+
     </application>
 
 </manifest>
