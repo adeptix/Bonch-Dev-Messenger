@@ -9,24 +9,25 @@
 
     <ImageView
         android:id="@+id/avatar_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="61dp"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/name_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars[0]" />
+        app:layout_constraintWidth_percent="0.6"
+        tools:srcCompat="@drawable/img_example" />
 
     <EditText
         android:id="@+id/name_edit_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="55dp"
-        android:ems="10"
         android:inputType="textPersonName"
-        android:text="Dima"
+        app:layout_constraintWidth_percent="0.55"
         app:layout_constraintBottom_toTopOf="@+id/email_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -37,22 +38,21 @@
         android:id="@+id/email_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="best.dev@gmail.com"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="best.dev@gmail.com" />
 
     <Button
         android:id="@+id/email_confirm_button"
+        style="@style/ButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_marginTop="48dp"
-        android:background="@drawable/background_button"
         android:text="@string/confirm_email_text"
-        android:textColor="#FFF"
         app:layout_constraintBottom_toTopOf="@+id/change_password_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -63,12 +63,11 @@
 
     <Button
         android:id="@+id/change_password_button"
+        style="@style/ButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="@drawable/background_button"
         android:text="@string/change_password_text"
-        android:textColor="#FFF"
         app:layout_constraintBottom_toTopOf="@+id/sign_out_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -78,12 +77,11 @@
 
     <Button
         android:id="@+id/sign_out_button"
+        style="@style/ButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="@drawable/background_button"
         android:text="@string/sign_out_text"
-        android:textColor="#FFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

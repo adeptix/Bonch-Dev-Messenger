@@ -33,11 +33,7 @@ class MainAppActivity : AppCompatActivity() {
     }
 
     fun attachPasswordFragment() {
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.fragment_container, PasswordFragment())
-            .addToBackStack("password_fragment")
-            .commit()
+        PasswordFragment().show(supportFragmentManager, "password_fragment")
     }
 
 

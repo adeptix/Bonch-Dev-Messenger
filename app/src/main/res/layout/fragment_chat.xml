@@ -3,22 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#CCCBCB"
-
     android:orientation="vertical">
-    <!--тут многа дел-->
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:maxHeight="100dp"
-        >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFF"
-            android:maxHeight="100dp">
+            android:layout_gravity="bottom"
+            android:background="#FFF">
 
 
             <EditText
@@ -26,9 +18,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:maxHeight="170dp"
                 android:layout_toStartOf="@id/send_message_button"
                 android:hint="@string/message_hint"
-                android:inputType="textPersonName" />
+                android:scrollbars="vertical"
+                android:inputType="textPersonName|textMultiLine" />
 
             <ImageButton
                 android:id="@+id/send_message_button"
@@ -43,6 +37,6 @@
 
         </RelativeLayout>
 
-    </FrameLayout>
+
 
 </FrameLayout>
