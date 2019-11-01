@@ -12,21 +12,26 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import bonch.dev.school.R
 import bonch.dev.school.models.ImageFactory
+import bonch.dev.school.models.Message
 import bonch.dev.school.models.MessageFactory
 import kotlinx.android.synthetic.main.other_message_item.view.*
 import kotlinx.android.synthetic.main.user_message_item.view.*
 import kotlinx.android.synthetic.main.user_message_item.view.message_text_view
 import kotlinx.android.synthetic.main.user_message_item.view.send_time_text_view
+import java.text.SimpleDateFormat
+import java.util.*
 
-class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageHolder>() {
+class MessageAdapter(val messageList: MutableList<Message>) : RecyclerView.Adapter<MessageAdapter.MessageHolder>() {
 
     private val TYPE_USER = 0
     private val TYPE_OTHER = 1
 
-    private val messageList = MessageFactory().messageList
     lateinit var imageFactory: ImageFactory
+    val sdf = SimpleDateFormat("dd-MM hh:mm", Locale("ru"))
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
+
         val view = when (viewType) {
             TYPE_USER -> LayoutInflater.from(parent.context).inflate(
                 R.layout.user_message_item,
@@ -65,11 +70,13 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageHolder>() {
 
     inner class MessageHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+
+
         fun bindUserMessage(position: Int) {
             val messageTextView = itemView.message_text_view
             messageTextView.text = messageList[position].messageText
             val timeTextView = itemView.send_time_text_view
-            timeTextView.text = messageList[position].sentDate.toString()
+            timeTextView.text = sdf.format(messageList[position].sentDate)
 
         }
 
@@ -77,7 +84,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageHolder>() {
             val messageTextView = itemView.message_text_view
             messageTextView.text = messageList[position].messageText
             val timeTextView = itemView.send_time_text_view
-            timeTextView.text = messageList[position].sentDate.toString()
+            timeTextView.text = sdf.format(messageList[position].sentDate)
             val userNameText = itemView.user_name_text_view
             userNameText.text = "other users"
 

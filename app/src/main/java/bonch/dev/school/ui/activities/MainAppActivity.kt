@@ -25,7 +25,7 @@ class MainAppActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-    //    attachFragment()
+        //    attachFragment()
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -60,6 +60,8 @@ class MainAppActivity : AppCompatActivity() {
             .addToBackStack("profile_fragment")
             .commit()
     }
+
+
 
     fun attachPasswordFragment() {
         PasswordFragment().show(supportFragmentManager, "password_fragment")
