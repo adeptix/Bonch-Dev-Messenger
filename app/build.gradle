@@ -20,6 +20,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -34,4 +42,6 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0-rc01'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.github.moove-it:fakeit:v0.7'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.1.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
 }
