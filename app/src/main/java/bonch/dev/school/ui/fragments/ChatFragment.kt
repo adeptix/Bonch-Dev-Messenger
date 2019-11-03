@@ -38,11 +38,11 @@ class ChatFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
         initializeViews(view, container)
 
+        createList(savedInstanceState)
 
-        createList()
         messageRecyclerView.scrollToPosition(messageList.size - 1)
-        setListeners()
 
+        setListeners()
 
         return view
 
@@ -57,18 +57,23 @@ class ChatFragment : Fragment() {
 
     }
 
-    private fun createList() {
-        if (arguments != null) {
-            messageList = arguments!!.getParcelableArrayList<Message>(LIST_KEY)!!.toMutableList()
-            Log.i("Adept", "in arguments")
+
+
+
+    private fun createList(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            messageList = savedInstanceState.getParcelableArrayList<Message>(LIST_KEY)!!.toMutableList()
+
 
         } else {
             messageList = MessageFactory().messageList
-            Log.i("Adept", "in factory")
+
         }
 
         messageRecyclerView.adapter = MessageAdapter(messageList)
     }
+
+
 
     private fun setListeners() {
         sendMessageButton.setOnClickListener {
@@ -90,20 +95,18 @@ class ChatFragment : Fragment() {
         messageRecyclerView.adapter!!.notifyItemInserted(position)
     }
 
-    /* override fun onSaveInstanceState(outState: Bundle) {
+     override fun onSaveInstanceState(outState: Bundle) {
         Log.i("Adept", "in saveInstance")
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList(LIST_KEY, ArrayList<Parcelable>(messageList))
-    }*/
+     }
 
 
-    companion object {
 
-        fun newInstance(messageList: MutableList<Message>) = ChatFragment().apply {
-            arguments = Bundle().apply {
-                putParcelableArrayList(LIST_KEY, ArrayList<Parcelable>(messageList))
-            }
-        }
-    }
+
+
+
+
+
 
 }
