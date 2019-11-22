@@ -1,7 +1,6 @@
 package bonch.dev.school.models
 
 import android.os.Parcelable
-import com.mooveit.library.Fakeit
 import kotlinx.android.parcel.Parcelize
 import java.text.SimpleDateFormat
 import java.util.*

@@ -16,6 +16,8 @@ import bonch.dev.school.models.Message
 import bonch.dev.school.models.MessageFactory
 import bonch.dev.school.ui.MessageAdapter
 import bonch.dev.school.ui.activities.MainAppActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.fragment_chat.view.*
 import java.util.*
@@ -28,7 +30,10 @@ class ChatFragment : Fragment() {
     private lateinit var messageRecyclerView: RecyclerView
     private lateinit var messageList: MutableList<Message>
 
-    private val LIST_KEY = "MESSAGE_LIST"
+    private lateinit var mDatebase: FirebaseDatabase
+    private lateinit var mReference: DatabaseReference
+    private lateinit var mAuth: FirebaseAuth
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,8 +43,26 @@ class ChatFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
         initializeViews(view, container)
 
-        createList(savedInstanceState)
 
+        // createList2()
+        //
+        // retainInstance = true
+        mDatebase = FirebaseDatabase.getInstance()
+        mAuth = FirebaseAuth.getInstance()
+        mReference = mDatebase.reference.child("Users").child(mAuth.currentUser!!.uid).child("chat")
+
+
+        loadFromDB()
+
+        if (messageList == null) {
+            messageList = MessageFactory().messageList
+            saveToDB()
+        }
+
+        messageList =
+            mBundleRecyclerViewState?.getParcelableArrayList<Message>("CHATS") ?: messageList
+
+        messageRecyclerView.adapter = MessageAdapter(messageList)
         messageRecyclerView.scrollToPosition(messageList.size - 1)
 
         setListeners()
@@ -57,22 +80,24 @@ class ChatFragment : Fragment() {
 
     }
 
+    private fun loadFromDB() {
+        mReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
 
+            }
 
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()) {
+                    messageList = p0.value as MutableList<Message>
+                }
+            }
 
-    private fun createList(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            messageList = savedInstanceState.getParcelableArrayList<Message>(LIST_KEY)!!.toMutableList()
-
-
-        } else {
-            messageList = MessageFactory().messageList
-
-        }
-
-        messageRecyclerView.adapter = MessageAdapter(messageList)
+        })
     }
 
+    private fun saveToDB() {
+        mReference.setValue(messageList)
+    }
 
 
     private fun setListeners() {
@@ -93,20 +118,38 @@ class ChatFragment : Fragment() {
         messageRecyclerView.scrollToPosition(position)
         messageList.add(Message(position, messageText, Calendar.getInstance().time, true))
         messageRecyclerView.adapter!!.notifyItemInserted(position)
+
+        saveToDB()
     }
 
-     override fun onSaveInstanceState(outState: Bundle) {
-        Log.i("Adept", "in saveInstance")
-        super.onSaveInstanceState(outState)
-        outState.putParcelableArrayList(LIST_KEY, ArrayList<Parcelable>(messageList))
-     }
+
+    override fun onPause() {
+        super.onPause()
+        mBundleRecyclerViewState = Bundle()
+        mBundleRecyclerViewState?.putParcelableArrayList(
+            "CHATS",
+            ArrayList<Parcelable>(messageList)
+        )
+    }
+
+//    override fun onResume() {
+//        super.onResume()
+//
+//        if (mBundleRecyclerViewState != null) {
+//            items = mBundleRecyclerViewState?.getParcelableArrayList<Message>("CHATS")!!
+//            adapter.notifyItemInserted(items.size - 1)
+//            message_recycler_view.scrollToPosition(items.size - 1)
+//        }
+//    }
 
 
+    companion object {
 
+        private var mBundleRecyclerViewState: Bundle? = null
 
-
-
-
+        @JvmStatic
+        fun newInstance() = ChatFragment()
+    }
 
 
 }

@@ -16,10 +16,6 @@ class ImageFactory(context: Context) {
     }
 
 
-    fun initDrawables(context: Context) {
-
-    }
-
     fun setRandomImage(tv: TextView) {
         tv.setCompoundDrawables(imageList[0], null, null, null)
     }
