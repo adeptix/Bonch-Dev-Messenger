@@ -15,22 +15,21 @@ import bonch.dev.school.R
 import bonch.dev.school.models.Message
 import bonch.dev.school.models.MessageFactory
 import bonch.dev.school.ui.MessageAdapter
-import bonch.dev.school.ui.activities.MainAppActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.fragment_chat.view.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ChatFragment : Fragment() {
 
     private lateinit var sendMessageButton: ImageButton
     private lateinit var messageEditText: EditText
     private lateinit var messageRecyclerView: RecyclerView
-    private lateinit var messageList: MutableList<Message>
+    private var messageList: MutableList<Message> = mutableListOf()
 
-    private lateinit var mDatebase: FirebaseDatabase
+    private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mReference: DatabaseReference
     private lateinit var mAuth: FirebaseAuth
 
@@ -41,29 +40,34 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
+
         initializeViews(view, container)
 
-
+       Log.d("Adept", "a chto vi delaete v chat fragmente?")
         // createList2()
         //
         // retainInstance = true
-        mDatebase = FirebaseDatabase.getInstance()
+        mDatabase = FirebaseDatabase.getInstance()
         mAuth = FirebaseAuth.getInstance()
-        mReference = mDatebase.reference.child("Users").child(mAuth.currentUser!!.uid).child("chat")
+        mReference = mDatabase.reference.child("Users").child(mAuth.currentUser!!.uid).child("chat")
 
 
-        loadFromDB()
+       // val isUser = true
+       // mDatabase.reference.child("Users").child(mAuth.currentUser!!.uid).setValue(Message(0, "weq", Date(), true))
 
-        if (messageList == null) {
-            messageList = MessageFactory().messageList
-            saveToDB()
-        }
+        loadChat()
 
-        messageList =
-            mBundleRecyclerViewState?.getParcelableArrayList<Message>("CHATS") ?: messageList
+     //   loadFromDB()
 
-        messageRecyclerView.adapter = MessageAdapter(messageList)
-        messageRecyclerView.scrollToPosition(messageList.size - 1)
+
+       //     messageList = MessageFactory().messageList
+        //    saveToDB()
+
+
+//        messageList =
+//            mBundleRecyclerViewState?.getParcelableArrayList<Message>("CHATS") ?: messageList
+
+
 
         setListeners()
 
@@ -71,16 +75,16 @@ class ChatFragment : Fragment() {
 
     }
 
-    private fun initializeViews(view: View, container: ViewGroup?) {
-        sendMessageButton = view.send_message_button
-        messageEditText = view.message_edit_text
-        messageRecyclerView = view.message_recycler_view
-        messageRecyclerView.layoutManager = LinearLayoutManager(container!!.context)
+    private fun loadChat(){
+        if(mBundleRecyclerViewState != null){
+            messageList = mBundleRecyclerViewState!!.getParcelableArrayList<Message>("CHATS") as MutableList<Message>
+            messageRecyclerView.adapter = MessageAdapter(messageList)
+          //  messageRecyclerView.scrollToPosition(messageList.size - 1)
+            return
+        }
 
 
-    }
 
-    private fun loadFromDB() {
         mReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
 
@@ -88,16 +92,52 @@ class ChatFragment : Fragment() {
 
             override fun onDataChange(p0: DataSnapshot) {
                 if (p0.exists()) {
-                    messageList = p0.value as MutableList<Message>
+                 //   messageList = p0.value as MutableList<HashMap<Int, String>>
+                    Log.i("Adept", "load from fire")
+                    p0.children.mapNotNullTo(messageList){
+                        it.getValue<Message>(Message::class.java)
+                    }
+                }else{
+                    Log.i("Adept", "generating")
+                    messageList = MessageFactory().messageList
+                    saveToDB()
                 }
+                messageRecyclerView.adapter = MessageAdapter(messageList)
+             //   messageRecyclerView.scrollToPosition(messageList.size - 1)
             }
 
         })
     }
 
+    private fun initializeViews(view: View, container: ViewGroup?) {
+        sendMessageButton = view.send_message_button
+        messageEditText = view.message_edit_text
+        messageRecyclerView = view.message_recycler_view
+        messageRecyclerView.layoutManager = LinearLayoutManager(container!!.context)
+    }
+
+//    private fun loadFromDB() {
+//        mReference.addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onCancelled(p0: DatabaseError) {
+//
+//            }
+//
+//            override fun onDataChange(p0: DataSnapshot) {
+//                if (p0.exists()) {
+//                    messageList = p0.value as MutableList<Message>
+//                }else{
+//                    messageList =
+//                }
+//            }
+//
+//        })
+//    }
+
     private fun saveToDB() {
         mReference.setValue(messageList)
     }
+
+
 
 
     private fun setListeners() {
@@ -113,11 +153,12 @@ class ChatFragment : Fragment() {
         if (messageText.trim().isEmpty()) return
 
         val position = messageList.size
+        Log.i("ADEPT","" + messageList.size)
 
         messageEditText.text.clear()
-        messageRecyclerView.scrollToPosition(position)
         messageList.add(Message(position, messageText, Calendar.getInstance().time, true))
         messageRecyclerView.adapter!!.notifyItemInserted(position)
+        messageRecyclerView.smoothScrollToPosition(position)
 
         saveToDB()
     }
@@ -130,17 +171,20 @@ class ChatFragment : Fragment() {
             "CHATS",
             ArrayList<Parcelable>(messageList)
         )
+
+        Log.i("ADEPT","save")
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//
-//        if (mBundleRecyclerViewState != null) {
-//            items = mBundleRecyclerViewState?.getParcelableArrayList<Message>("CHATS")!!
-//            adapter.notifyItemInserted(items.size - 1)
-//            message_recycler_view.scrollToPosition(items.size - 1)
-//        }
-//    }
+    override fun onResume() {
+        super.onResume()
+        Log.i("ADEPT","onResumeddddd")
+        if (mBundleRecyclerViewState != null) {
+
+
+            messageList = mBundleRecyclerViewState?.getParcelableArrayList<Message>("CHATS")!!
+            Log.i("ADEPT","" + messageList.size)
+        }
+    }
 
 
     companion object {

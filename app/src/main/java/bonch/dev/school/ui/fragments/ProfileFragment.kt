@@ -14,7 +14,6 @@ import bonch.dev.school.R
 import bonch.dev.school.ui.activities.MainAppActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 
 class ProfileFragment : Fragment() {
@@ -45,9 +44,8 @@ class ProfileFragment : Fragment() {
         mReference = mDatabase.reference.child("Users").child(user)
 
         initializeViews(view)
-        setListeners()
-        setUserData()
-
+        setListeners(view)
+        setUserData(view)
 
 
         return view
@@ -62,26 +60,26 @@ class ProfileFragment : Fragment() {
         signOutButton = view.sign_out_button
 
         if (mAuth.currentUser!!.isEmailVerified) {
-            email_confirm_button.visibility = View.GONE
+            view.email_confirm_button.visibility = View.GONE
         }
     }
 
-    private fun setListeners() {
+    private fun setListeners(view : View) {
         changePasswordButton.setOnClickListener {
-            (context as MainAppActivity).attachPasswordFragment()
+            PasswordFragment().show(fragmentManager!!, "password_fragment")
         }
 
-        sign_out_button.setOnClickListener {
+        view.sign_out_button.setOnClickListener {
             mAuth.signOut()
             (context as MainAppActivity).signOut()
         }
 
-        email_confirm_button.setOnClickListener {
+        view.email_confirm_button.setOnClickListener {
             mAuth.currentUser!!.sendEmailVerification()
         }
     }
 
-    private fun setUserData() {
+    private fun setUserData(view : View) {
 
 
         mReference.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -90,7 +88,7 @@ class ProfileFragment : Fragment() {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                name_text_view.text = (p0.child("name").value.toString())
+                view.name_text_view.text = (p0.child("name").value.toString())
 
             }
 

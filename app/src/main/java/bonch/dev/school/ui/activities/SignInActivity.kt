@@ -28,6 +28,11 @@ class SignInActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
+        if(mAuth.currentUser != null){
+            Log.d("Adept", "toMainAct")
+            toMainActivity()
+        }
+
         setListeners()
     }
 
